@@ -8,6 +8,8 @@ var eslint = require('gulp-eslint');
 var jasmine = require('gulp-jasmine-phantom');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
+var imagemin = require('gulp-imagemin');
 
 gulp.task('default', ['copy-html', 'copy-images', 'styles', 'lint', 'scripts'], function() {
 	gulp.watch('sass/**/*.scss', ['styles']);
@@ -19,6 +21,15 @@ gulp.task('default', ['copy-html', 'copy-images', 'styles', 'lint', 'scripts'], 
 		server: './dist'
 	});
 });
+
+// gulp.task('default', function() {
+//     return gulp.src('src/images/*')
+//         .pipe(imagemin({
+//             progressive: true,
+//             use: [pngquant()]
+//         }))
+//         .pipe(gulp.dest('dist/images'));
+// });
 
 gulp.task('dist', [
 	'copy-html',
@@ -36,8 +47,10 @@ gulp.task('scripts', function() {
 
 gulp.task('scripts-dist', function() {
 	gulp.src('js/**/*.js')
+		.pipe(sourcemaps.init())
 		.pipe(concat('all.js'))
 		.pipe(uglify())
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist/js'));
 });
 
